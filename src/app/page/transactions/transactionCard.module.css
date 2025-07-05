@@ -1,0 +1,8 @@
+.transactionCardContainer {
+  display: flex;
+  padding: 1rem;
+}
+
+.amount {
+  margin-left: auto;
+}

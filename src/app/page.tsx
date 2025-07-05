@@ -1,8 +1,7 @@
-const Totals = () => <div>Totals</div>;
+import Totals from "./page/Totals";
+import Transactions from "./page/Transactions";
 
-const Transactions = () => <div>Transactions</div>;
-
-const Home = () => {
+const App = () => {
   return (
     <>
       <Totals />
@@ -11,4 +10,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default App;
