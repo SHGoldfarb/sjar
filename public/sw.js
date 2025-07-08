@@ -1,4 +1,4 @@
-const appVersion = "0.0.17";
+const appVersion = "0.0.22";
 const cacheName = `sjar-general-cache-${appVersion}`;
 
 const deleteOldKeys = async () => {
