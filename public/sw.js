@@ -1,4 +1,4 @@
-const appVersion = "0.0.15";
+const appVersion = "0.0.16";
 const cacheName = `sjar-general-cache-${appVersion}`;
 
 const deleteOldKeys = async () => {
@@ -33,7 +33,7 @@ self.addEventListener("fetch", (e) => {
     (async () => {
       const r = await caches.match(e.request);
       console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
-      if (r) {
+      if (r && !e.request.url.includes("localhost")) {
         return r;
       }
       const response = await fetch(e.request);
