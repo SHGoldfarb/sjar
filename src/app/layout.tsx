@@ -3,6 +3,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import { NavMenu } from "./layout/NavMenu";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,9 +31,10 @@ export default function RootLayout({
       <Script src="/register-sw.js" />
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
         >
           {children}
+          <NavMenu />
         </body>
       </html>
     </>

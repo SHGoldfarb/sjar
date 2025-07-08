@@ -1,4 +1,4 @@
-const appVersion = "0.0.16";
+const appVersion = "0.0.17";
 const cacheName = `sjar-general-cache-${appVersion}`;
 
 const deleteOldKeys = async () => {
@@ -19,7 +19,7 @@ const deleteOldKeys = async () => {
   }
 };
 
-self.addEventListener("install", (e) => {
+self.addEventListener("install", (_e) => {
   console.log("[Service Worker] Install");
 });
 
