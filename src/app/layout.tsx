@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import { NavMenu } from "./layout/NavMenu";
+import { Providers } from "@/providers/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,8 +34,10 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
         >
-          {children}
-          <NavMenu />
+          <Providers>
+            {children}
+            <NavMenu />
+          </Providers>
         </body>
       </html>
     </>
