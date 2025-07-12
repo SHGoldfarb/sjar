@@ -27,6 +27,18 @@ const fetchAndSave = async (request) => {
   return response;
 };
 
+const handleRequestEvent = async (e) => {
+  console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
+  const cachedResponse = await caches.match(e.request);
+  const responsePromise = fetchAndSave(e.request);
+  if (cachedResponse) {
+    console.log(`[Service Worker] Using cached response for: ${e.request.url}`);
+    return cachedResponse;
+  }
+  console.log(`[Service Worker] Using network response for: ${e.request.url}`);
+  return responsePromise;
+};
+
 self.addEventListener("install", (_e) => {
   console.log("[Service Worker] Install");
 });
@@ -37,21 +49,5 @@ self.addEventListener("activate", (e) => {
 });
 
 self.addEventListener("fetch", (e) => {
-  e.respondWith(
-    (async () => {
-      console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
-      const cachedResponse = await caches.match(e.request);
-      const responsePromise = fetchAndSave(e.request);
-      if (cachedResponse) {
-        console.log(
-          `[Service Worker] Using cached response for: ${e.request.url}`
-        );
-        return cachedResponse;
-      }
-      console.log(
-        `[Service Worker] Using network response for: ${e.request.url}`
-      );
-      return await responsePromise;
-    })()
-  );
+  e.respondWith(handleRequestEvent(e));
 });
