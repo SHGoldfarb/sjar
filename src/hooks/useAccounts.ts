@@ -1,7 +1,8 @@
 import { useAsync } from "@/hooks/useAsync";
 import { dbGetAccounts } from "@/lib/database/accounts";
 import { useAccountsStaleIndicator } from "@/providers/AccountsStaleIndicator";
-import { Account, dbUpsertAccount } from "@/lib/database/accounts";
+import { dbUpsertAccount } from "@/lib/database/accounts";
+import { Account } from "@/lib/database/common";
 
 export const useAccounts = () => {
   const [staleIndicator, setStaleIndicator] = useAccountsStaleIndicator();

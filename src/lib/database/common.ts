@@ -33,14 +33,14 @@ export async function dbUpsert(
 export async function dbUpsert(
   item: Account | Jar | Transaction,
   storeName: typeof ACCOUNTS | typeof JARS | typeof TRANSACTIONS
-): Promise<number> {
+) {
   const db = await getDatabase();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(storeName, "readwrite");
     const store = transaction.objectStore(storeName);
     const request = store.put(item);
     request.onsuccess = () => {
-      resolve(request.result as number);
+      resolve(request.result);
     };
     request.onerror = () => {
       reject(request.error);
@@ -73,9 +73,9 @@ export async function dbGetAll(
 ): Promise<Transaction[]>;
 export async function dbGetAll(
   storeName: typeof ACCOUNTS | typeof JARS | typeof TRANSACTIONS
-): Promise<Account[] | Jar[] | Transaction[]> {
+) {
   const db = await getDatabase();
-  return new Promise<Account[] | Transaction[] | Jar[]>((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const transaction = db.transaction(storeName, "readonly");
     const store = transaction.objectStore(storeName);
     const request = store.getAll();
@@ -91,31 +91,26 @@ export async function dbGetAll(
 export async function dbGet(
   id: number,
   storeName: typeof ACCOUNTS
-): Promise<Account | undefined>;
-export async function dbGet(
-  id: number,
-  storeName: typeof JARS
-): Promise<Jar | undefined>;
+): Promise<Account>;
+export async function dbGet(id: number, storeName: typeof JARS): Promise<Jar>;
 export async function dbGet(
   id: number,
   storeName: typeof TRANSACTIONS
-): Promise<Transaction | undefined>;
+): Promise<Transaction>;
 export async function dbGet(
   id: number,
   storeName: typeof ACCOUNTS | typeof JARS | typeof TRANSACTIONS
-): Promise<Account | Jar | Transaction | undefined> {
+) {
   const db = await getDatabase();
-  return new Promise<Account | Jar | Transaction | undefined>(
-    (resolve, reject) => {
-      const transaction = db.transaction(storeName, "readonly");
-      const store = transaction.objectStore(storeName);
-      const request = store.get(id);
-      request.onsuccess = () => {
-        resolve(request.result);
-      };
-      request.onerror = () => {
-        reject(request.error);
-      };
-    }
-  );
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(storeName, "readonly");
+    const store = transaction.objectStore(storeName);
+    const request = store.get(id);
+    request.onsuccess = () => {
+      resolve(request.result);
+    };
+    request.onerror = () => {
+      reject(request.error);
+    };
+  });
 }

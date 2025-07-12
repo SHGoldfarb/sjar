@@ -12,8 +12,8 @@ const useCreateInitialAccounts = () => {
     if (data?.length === 0 && !isLoading && !called) {
       setCalled(true);
       const initialAccounts = [
-        { name: "Default Account" },
-        { name: "Savings Account" },
+        { name: "Default Account", type: "account" as const },
+        { name: "Savings Account", type: "account" as const },
       ];
       initialAccounts.forEach(async (account) => {
         upsertAccount(account);

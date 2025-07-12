@@ -23,7 +23,7 @@ export const dbGetAccounts = memoizeWithDataVersion(
   () => dataVersion
 );
 
-const getAccountNoCache = async (id: number) => dbGet(id, ACCOUNTS);
+const getAccountNoCache = (id: number) => dbGet(id, ACCOUNTS);
 
 export const dbGetAccount = memoizeWithDataVersion(
   getAccountNoCache,
