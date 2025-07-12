@@ -13,20 +13,26 @@ import {
 export const NavMenu = () => {
   return (
     <NavigationMenu className="fixed bottom-0 left-0 max-w-none">
-      <NavigationMenuList className="justify-evenly w-screen">
+      <NavigationMenuList className="w-screen grid grid-cols-3">
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
-            <Link href={"/"}>Transactions</Link>
+            <Link href={"/"} className="text-center">
+              Transactions
+            </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
-            <Link href={"/accounts"}>Accounts</Link>
+            <Link href={"/accounts"} className="text-center">
+              Accounts
+            </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
-            <Link href={"/jars"}>Jars</Link>
+            <Link href={"/jars"} className="text-center">
+              Jars
+            </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
