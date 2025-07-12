@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { useAccounts } from "@/hooks/useAccounts";
 import { useEffect, useState } from "react";
 
@@ -26,9 +27,9 @@ const Accounts = () => {
   const { data: accounts = [] } = useAccounts();
 
   return (
-    <div>
+    <div className="flex flex-col gap-4 p-4">
       {accounts.map((account) => (
-        <div key={account.id}>{account.name}</div>
+        <Button key={account.id}>{account.name}</Button>
       ))}
     </div>
   );
