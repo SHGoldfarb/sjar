@@ -1,52 +1,121 @@
-const DB_NAME = "AppDatabase";
-const DB_VERSION = 1;
-export const ACCOUNTS = "accounts";
-export const JARS = "jars";
-export const TRANSACTIONS = "transactions";
+import { ACCOUNTS, getDatabase, JARS, TRANSACTIONS } from "./db";
 
-const openDatabase = (): Promise<IDBDatabase> => {
+export type Account = {
+  id?: number;
+  name?: string;
+  type: "account";
+};
+
+export type Jar = {
+  id?: number;
+  name?: string;
+  type: "jar";
+};
+
+export type Transaction = {
+  id?: number;
+  amount?: number;
+  type: "transaction";
+};
+
+export async function dbUpsert(
+  item: Account,
+  storeName: typeof ACCOUNTS
+): Promise<number>;
+export async function dbUpsert(
+  item: Jar,
+  storeName: typeof JARS
+): Promise<number>;
+export async function dbUpsert(
+  item: Transaction,
+  storeName: typeof TRANSACTIONS
+): Promise<number>;
+export async function dbUpsert(
+  item: Account | Jar | Transaction,
+  storeName: typeof ACCOUNTS | typeof JARS | typeof TRANSACTIONS
+): Promise<number> {
+  const db = await getDatabase();
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-    request.onupgradeneeded = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      if (!db.objectStoreNames.contains(ACCOUNTS)) {
-        db.createObjectStore(ACCOUNTS, {
-          keyPath: "id",
-          autoIncrement: true,
-        });
-      }
-
-      if (!db.objectStoreNames.contains(JARS)) {
-        db.createObjectStore(JARS, {
-          keyPath: "id",
-          autoIncrement: true,
-        });
-      }
-
-      if (!db.objectStoreNames.contains(TRANSACTIONS)) {
-        db.createObjectStore(TRANSACTIONS, {
-          keyPath: "id",
-          autoIncrement: true,
-        });
-      }
-    };
-
+    const transaction = db.transaction(storeName, "readwrite");
+    const store = transaction.objectStore(storeName);
+    const request = store.put(item);
     request.onsuccess = () => {
-      resolve(request.result);
+      resolve(request.result as number);
     };
+    request.onerror = () => {
+      reject(request.error);
+    };
+  });
+}
 
+export const dbDelete = async (
+  id: number,
+  storeName: typeof ACCOUNTS | typeof JARS | typeof TRANSACTIONS
+): Promise<void> => {
+  const db = await getDatabase();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(storeName, "readwrite");
+    const store = transaction.objectStore(storeName);
+    const request = store.delete(id);
+    request.onsuccess = () => {
+      resolve();
+    };
     request.onerror = () => {
       reject(request.error);
     };
   });
 };
 
-let db: IDBDatabase | null = null;
+export async function dbGetAll(storeName: typeof ACCOUNTS): Promise<Account[]>;
+export async function dbGetAll(storeName: typeof JARS): Promise<Jar[]>;
+export async function dbGetAll(
+  storeName: typeof TRANSACTIONS
+): Promise<Transaction[]>;
+export async function dbGetAll(
+  storeName: typeof ACCOUNTS | typeof JARS | typeof TRANSACTIONS
+): Promise<Account[] | Jar[] | Transaction[]> {
+  const db = await getDatabase();
+  return new Promise<Account[] | Transaction[] | Jar[]>((resolve, reject) => {
+    const transaction = db.transaction(storeName, "readonly");
+    const store = transaction.objectStore(storeName);
+    const request = store.getAll();
+    request.onsuccess = () => {
+      resolve(request.result);
+    };
+    request.onerror = () => {
+      reject(request.error);
+    };
+  });
+}
 
-export const getDatabase = async (): Promise<IDBDatabase> => {
-  if (!db) {
-    db = await openDatabase();
-  }
-  return db;
-};
+export async function dbGet(
+  id: number,
+  storeName: typeof ACCOUNTS
+): Promise<Account | undefined>;
+export async function dbGet(
+  id: number,
+  storeName: typeof JARS
+): Promise<Jar | undefined>;
+export async function dbGet(
+  id: number,
+  storeName: typeof TRANSACTIONS
+): Promise<Transaction | undefined>;
+export async function dbGet(
+  id: number,
+  storeName: typeof ACCOUNTS | typeof JARS | typeof TRANSACTIONS
+): Promise<Account | Jar | Transaction | undefined> {
+  const db = await getDatabase();
+  return new Promise<Account | Jar | Transaction | undefined>(
+    (resolve, reject) => {
+      const transaction = db.transaction(storeName, "readonly");
+      const store = transaction.objectStore(storeName);
+      const request = store.get(id);
+      request.onsuccess = () => {
+        resolve(request.result);
+      };
+      request.onerror = () => {
+        reject(request.error);
+      };
+    }
+  );
+}

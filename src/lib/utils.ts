@@ -19,3 +19,20 @@ export const memoize = <T extends (...args: Parameters<T>) => ReturnType<T>>(
     return result;
   }) as T;
 };
+
+export const memoizeWithDataVersion = <
+  T extends (...args: Parameters<T>) => ReturnType<T>
+>(
+  fn: T,
+  getDataVersion: () => number
+) => {
+  const memoizedFn = memoize(
+    (_args: { dataVersion: number }, ...rest: Parameters<T>) => {
+      return fn(...rest);
+    }
+  );
+
+  return (...args: Parameters<T>) => {
+    return memoizedFn({ dataVersion: getDataVersion() }, ...args);
+  };
+};
