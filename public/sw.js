@@ -1,4 +1,4 @@
-const appVersion = "0.0.23";
+const appVersion = "0.0.26";
 const cacheName = `sjar-general-cache-${appVersion}`;
 
 const deleteOldKeys = async () => {
@@ -19,6 +19,14 @@ const deleteOldKeys = async () => {
   }
 };
 
+const fetchAndSave = async (request) => {
+  const response = await fetch(request);
+  const cache = await caches.open(cacheName);
+  console.log(`[Service Worker] Caching resource: ${request.url}`);
+  cache.put(request, response.clone());
+  return response;
+};
+
 self.addEventListener("install", (_e) => {
   console.log("[Service Worker] Install");
 });
@@ -31,16 +39,19 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   e.respondWith(
     (async () => {
-      const r = await caches.match(e.request);
       console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
-      if (r && !e.request.url.includes("localhost")) {
-        return r;
+      const cachedResponse = await caches.match(e.request);
+      const responsePromise = fetchAndSave(e.request);
+      if (cachedResponse) {
+        console.log(
+          `[Service Worker] Using cached response for: ${e.request.url}`
+        );
+        return cachedResponse;
       }
-      const response = await fetch(e.request);
-      const cache = await caches.open(cacheName);
-      console.log(`[Service Worker] Caching new resource: ${e.request.url}`);
-      cache.put(e.request, response.clone());
-      return response;
+      console.log(
+        `[Service Worker] Using network response for: ${e.request.url}`
+      );
+      return await responsePromise;
     })()
   );
 });
