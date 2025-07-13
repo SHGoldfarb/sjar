@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useAccounts } from "@/hooks/useAccounts";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const useCreateInitialAccounts = () => {
@@ -29,7 +30,9 @@ const Accounts = () => {
   return (
     <div className="flex flex-col gap-4 p-4">
       {accounts.map((account) => (
-        <Button key={account.id}>{account.name}</Button>
+        <Button key={account.id} asChild>
+          <Link href={`/account?accountId=${account.id}`}>{account.name}</Link>
+        </Button>
       ))}
     </div>
   );

@@ -5,6 +5,7 @@ import "./globals.css";
 import Script from "next/script";
 import { NavMenu } from "./layout/NavMenu";
 import { Providers } from "@/providers/Providers";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,10 +35,12 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
         >
-          <Providers>
-            {children}
-            <NavMenu />
-          </Providers>
+          <Suspense>
+            <Providers>
+              {children}
+              <NavMenu />
+            </Providers>
+          </Suspense>
         </body>
       </html>
     </>
