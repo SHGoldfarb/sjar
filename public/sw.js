@@ -1,5 +1,6 @@
 const appVersion = "0.0.26";
 const cacheName = `sjar-general-cache-${appVersion}`;
+const disableLocalhost = true;
 
 const deleteOldKeys = async () => {
   console.log("[Service Worker] Getting keys...");
@@ -31,7 +32,10 @@ const handleRequestEvent = async (e) => {
   console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
   const cachedResponse = await caches.match(e.request);
   const responsePromise = fetchAndSave(e.request);
-  if (cachedResponse) {
+  if (
+    cachedResponse &&
+    !(disableLocalhost && e.request.url.includes("://localhost:"))
+  ) {
     console.log(`[Service Worker] Using cached response for: ${e.request.url}`);
     return cachedResponse;
   }
