@@ -1,21 +1,23 @@
 import { useAsync } from "@/hooks/useAsync";
 import { dbGetAccounts } from "@/lib/database/accounts";
 import { useAccountsStaleIndicator } from "@/providers/AccountsStaleIndicator";
-import { dbUpsertAccount } from "@/lib/database/accounts";
-import { Account } from "@/lib/database/common";
+import { useMemo } from "react";
 
-export const useAccounts = () => {
-  const [staleIndicator, setStaleIndicator] = useAccountsStaleIndicator();
+export const useAccounts = (options?: { withDeleted?: boolean }) => {
+  const [staleIndicator] = useAccountsStaleIndicator();
+  const getAccounts = useMemo(
+    () => async () => {
+      const accounts = await dbGetAccounts();
+      return options?.withDeleted
+        ? accounts
+        : accounts.filter((account) => !account.deletedAt);
+    },
+    [options?.withDeleted]
+  );
 
-  const upsertAccount = async (account: Account) => {
-    const response = await dbUpsertAccount(account);
-    setStaleIndicator((prev) => prev + 1);
-    return response;
-  };
-
-  const { data, isLoading } = useAsync(dbGetAccounts, {
+  const { data, isLoading } = useAsync(getAccounts, {
     deps: [staleIndicator],
   });
 
-  return { data, isLoading, upsertAccount };
+  return { data, isLoading };
 };

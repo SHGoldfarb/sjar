@@ -1,19 +1,23 @@
 import { ACCOUNTS, getDatabase, JARS, TRANSACTIONS } from "./db";
 
-export type Account = {
+type BaseItem = {
   id?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+};
+
+export type Account = BaseItem & {
   name?: string;
   type: "account";
 };
 
-export type Jar = {
-  id?: number;
+export type Jar = BaseItem & {
   name?: string;
   type: "jar";
 };
 
-export type Transaction = {
-  id?: number;
+export type Transaction = BaseItem & {
   amount?: number;
   type: "transaction";
 };

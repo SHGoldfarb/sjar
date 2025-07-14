@@ -2,11 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { useAccounts } from "@/hooks/useAccounts";
+import { useUpsertAccount } from "@/hooks/useUpsertAccount";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const useCreateInitialAccounts = () => {
-  const { data, isLoading, upsertAccount } = useAccounts();
+  const { data, isLoading } = useAccounts();
+  const { upsertAccount } = useUpsertAccount();
   const [called, setCalled] = useState(false);
 
   useEffect(() => {
