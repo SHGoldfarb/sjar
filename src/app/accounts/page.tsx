@@ -16,6 +16,9 @@ const Accounts = () => {
           <Link href={`/account?accountId=${account.id}`}>{account.name}</Link>
         </Button>
       ))}
+      <Button asChild>
+        <Link href={`/account/new`}>+</Link>
+      </Button>
     </div>
   );
 };
