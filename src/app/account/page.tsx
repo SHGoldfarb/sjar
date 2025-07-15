@@ -1,12 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useAccount } from "@/hooks/useAccount";
 import { useUpsertAccount } from "@/hooks/useUpsertAccount";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useRef } from "react";
-import Form from "next/form";
+import { AccountForm } from "./components/AccountForm";
 
 const AccountPage = () => {
   const searchParams = useSearchParams();
@@ -16,13 +14,12 @@ const AccountPage = () => {
   const router = useRouter();
 
   const { data: account, isLoading } = useAccount(Number(accountId));
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleSave = async () => {
-    if (inputRef.current?.value && account) {
+  const handleSave = async (value: string) => {
+    if (account) {
       const updatedAccount = {
         ...account,
-        name: inputRef.current.value,
+        name: value,
       };
       await upsertAccount(updatedAccount);
       router.push("/accounts");
@@ -41,15 +38,11 @@ const AccountPage = () => {
   }
 
   return (
-    <Form action={handleSave}>
-      <Input
-        defaultValue={account?.name || ""}
-        placeholder="Account Name"
-        ref={inputRef}
-      />
-      <Button type="submit">Save</Button>
-      <Button onClick={handleDelete}>Delete</Button>
-    </Form>
+    <AccountForm onSubmit={handleSave} defaultValue={account?.name || ""}>
+      <Button onClick={handleDelete} type="button">
+        Delete
+      </Button>
+    </AccountForm>
   );
 };
 
