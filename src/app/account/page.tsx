@@ -6,6 +6,7 @@ import { useAccount } from "@/hooks/useAccount";
 import { useUpsertAccount } from "@/hooks/useUpsertAccount";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRef } from "react";
+import Form from "next/form";
 
 const AccountPage = () => {
   const searchParams = useSearchParams();
@@ -40,15 +41,15 @@ const AccountPage = () => {
   }
 
   return (
-    <>
+    <Form action={handleSave}>
       <Input
         defaultValue={account?.name || ""}
         placeholder="Account Name"
         ref={inputRef}
       />
-      <Button onClick={handleSave}>Save</Button>
+      <Button type="submit">Save</Button>
       <Button onClick={handleDelete}>Delete</Button>
-    </>
+    </Form>
   );
 };
 
