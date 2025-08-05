@@ -27,12 +27,9 @@ export const memoizeWithDataVersion = <
   getDataVersion: () => number
 ) => {
   const memoizedFn = memoize(
-    (_args: { dataVersion: number }, ...rest: Parameters<T>) => {
-      return fn(...rest);
-    }
+    (_args: { dataVersion: number }, ...rest: Parameters<T>) => fn(...rest)
   );
 
-  return (...args: Parameters<T>) => {
-    return memoizedFn({ dataVersion: getDataVersion() }, ...args);
-  };
+  return (...args: Parameters<T>) =>
+    memoizedFn({ dataVersion: getDataVersion() }, ...args);
 };

@@ -1,4 +1,4 @@
-const appVersion = "0.0.26";
+const appVersion = "0.0.27";
 const cacheName = `sjar-general-cache-${appVersion}`;
 const disableLocalhost = true;
 
@@ -20,6 +20,26 @@ const deleteOldKeys = async () => {
   }
 };
 
+const removeSearchParams = (request) => {
+  // Create a new URL without search parameters
+  const url = new URL(request.url);
+  url.search = "";
+
+  // Create a new request with the modified URL
+  const modifiedRequest = new Request(url.toString(), {
+    method: request.method,
+    headers: request.headers,
+    body: request.body,
+    mode: request.mode,
+    credentials: request.credentials,
+    cache: request.cache,
+    redirect: request.redirect,
+    referrer: request.referrer,
+  });
+
+  return modifiedRequest;
+};
+
 const fetchAndSave = async (request) => {
   const response = await fetch(request);
   const cache = await caches.open(cacheName);
@@ -30,16 +50,21 @@ const fetchAndSave = async (request) => {
 
 const handleRequestEvent = async (e) => {
   console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
-  const cachedResponse = await caches.match(e.request);
-  const responsePromise = fetchAndSave(e.request);
+  const plainRequest = removeSearchParams(e.request);
+  const cachedResponse = await caches.match(plainRequest);
+  const responsePromise = fetchAndSave(plainRequest);
   if (
     cachedResponse &&
-    !(disableLocalhost && e.request.url.includes("://localhost:"))
+    !(disableLocalhost && plainRequest.url.includes("://localhost:"))
   ) {
-    console.log(`[Service Worker] Using cached response for: ${e.request.url}`);
+    console.log(
+      `[Service Worker] Using cached response for: ${plainRequest.url}`
+    );
     return cachedResponse;
   }
-  console.log(`[Service Worker] Using network response for: ${e.request.url}`);
+  console.log(
+    `[Service Worker] Using network response for: ${plainRequest.url}`
+  );
   return responsePromise;
 };
 
