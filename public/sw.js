@@ -1,4 +1,4 @@
-const appVersion = "0.0.27";
+const appVersion = "0.0.28";
 const cacheName = `sjar-general-cache-${appVersion}`;
 const disableLocalhost = true;
 
@@ -21,21 +21,24 @@ const deleteOldKeys = async () => {
 };
 
 const removeSearchParams = (request) => {
-  // Create a new URL without search parameters
   const url = new URL(request.url);
   url.search = "";
 
-  // Create a new request with the modified URL
-  const modifiedRequest = new Request(url.toString(), {
+  const requestOptions = {
     method: request.method,
     headers: request.headers,
     body: request.body,
-    mode: request.mode,
     credentials: request.credentials,
     cache: request.cache,
     redirect: request.redirect,
     referrer: request.referrer,
-  });
+  };
+
+  if (request.mode !== "navigate") {
+    requestOptions.mode = request.mode;
+  }
+
+  const modifiedRequest = new Request(url.toString(), requestOptions);
 
   return modifiedRequest;
 };
