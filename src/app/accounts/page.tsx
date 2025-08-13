@@ -2,11 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { useAccounts } from "@/hooks/useAccounts";
-import { useCreateInitialAccounts } from "@/lib/mock/useCreateInitialAccounts";
 import Link from "next/link";
 
 const Accounts = () => {
-  useCreateInitialAccounts();
   const { data: accounts = [] } = useAccounts();
 
   return (
