@@ -1,28 +1,8 @@
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useState,
-} from "react";
+import { createStaleIndicator } from "./utils/staleIndicators";
 
-const AccountsStaleIndicactor = createContext([
-  1 as number,
-  ((_value: number) => {}) as Dispatch<SetStateAction<number>>,
-] as const);
+const {
+  useStaleIndicator: useAccountsStaleIndicator,
+  StaleIndicatorProvider: AccountsStaleIndicatorProvider,
+} = createStaleIndicator();
 
-export const useAccountsStaleIndicator = () =>
-  useContext(AccountsStaleIndicactor);
-
-export const AccountsStaleIndicatorProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const [value, setValue] = useState(1);
-  return (
-    <AccountsStaleIndicactor.Provider value={[value, setValue]}>
-      {children}
-    </AccountsStaleIndicactor.Provider>
-  );
-};
+export { AccountsStaleIndicatorProvider, useAccountsStaleIndicator };
