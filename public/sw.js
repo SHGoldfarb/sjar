@@ -1,4 +1,4 @@
-const appVersion = "0.0.28";
+const appVersion = "0.0.29";
 const cacheName = `sjar-general-cache-${appVersion}`;
 const disableLocalhost = true;
 
