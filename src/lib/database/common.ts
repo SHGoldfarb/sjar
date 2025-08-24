@@ -17,10 +17,40 @@ export type Jar = BaseItem & {
   type: "jar";
 };
 
-export type Transaction = BaseItem & {
-  amount?: number;
+export type BaseTransaction = BaseItem & {
+  amount: number;
   type: "transaction";
 };
+
+export type ExpenseTransaction = BaseTransaction & {
+  transactionType: "expense";
+  accountId: number;
+  jarId: number;
+};
+
+export type IncomeTransaction = BaseTransaction & {
+  transactionType: "income";
+  accountId: number;
+  jarId: number;
+};
+
+export type AccountsTransaction = BaseTransaction & {
+  transactionType: "accounts";
+  originAccountId: number;
+  destinationAccountId: number;
+};
+
+export type JarsTransaction = BaseTransaction & {
+  transactionType: "jars";
+  originJarId: number;
+  destinationJarId: number;
+};
+
+export type Transaction =
+  | ExpenseTransaction
+  | IncomeTransaction
+  | AccountsTransaction
+  | JarsTransaction;
 
 export async function dbUpsert(
   item: Account,

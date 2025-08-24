@@ -1,15 +1,15 @@
 import { useMemo } from "react";
 import styles from "./totals.module.css";
-import { useTransactions } from "./hooks/useTransactions";
 import Amount from "./components/Amount";
+import { useTransactions } from "@/hooks/useTransactions";
 
 const Totals = () => {
-  const transactions = useTransactions();
+  const { data: transactions = [] } = useTransactions();
 
   const totalIncome = useMemo(
     () =>
       transactions.reduce((total, transaction) => {
-        if (transaction.type === "income") {
+        if (transaction.transactionType === "income") {
           return total + transaction.amount;
         }
 
@@ -21,7 +21,7 @@ const Totals = () => {
   const totalExpense = useMemo(
     () =>
       transactions.reduce((total, transaction) => {
-        if (transaction.type === "expense") {
+        if (transaction.transactionType === "expense") {
           return total + transaction.amount;
         }
 

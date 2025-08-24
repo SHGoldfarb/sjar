@@ -4,15 +4,15 @@ import styles from "./transactionCard.module.css";
 const TransactionCard = ({
   transaction,
 }: {
-  transaction: { amount: number; type: string; date: Date };
+  transaction: { amount: number; transactionType: string };
 }) => {
   return (
     <div className={styles.transactionCardContainer}>
-      <div>{transaction.date.toLocaleString()}</div>
+      <div>Date placeholder</div>
       <Amount
         className={styles.amount}
         amount={transaction.amount}
-        type={transaction.type}
+        type={transaction.transactionType}
       />
     </div>
   );

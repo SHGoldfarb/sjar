@@ -1,3 +1,5 @@
+"use client";
+
 import Totals from "./page/Totals";
 import Transactions from "./page/Transactions";
 

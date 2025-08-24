@@ -1,8 +1,8 @@
-import { useTransactions } from "./hooks/useTransactions";
+import { useTransactions } from "@/hooks/useTransactions";
 import TransactionCard from "./transactions/TransactionCard";
 
 const Transactions = () => {
-  const transactions = useTransactions();
+  const { data: transactions = [] } = useTransactions();
 
   return (
     <div>
