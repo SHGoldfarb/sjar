@@ -20,6 +20,7 @@ export type Jar = BaseItem & {
 export type BaseTransaction = BaseItem & {
   amount: number;
   type: "transaction";
+  dateIso: string;
 };
 
 export type ExpenseTransaction = BaseTransaction & {

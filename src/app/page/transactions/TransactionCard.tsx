@@ -1,14 +1,12 @@
+import { Transaction } from "@/lib/database/common";
 import Amount from "../components/Amount";
 import styles from "./transactionCard.module.css";
 
-const TransactionCard = ({
-  transaction,
-}: {
-  transaction: { amount: number; transactionType: string };
-}) => {
+const TransactionCard = ({ transaction }: { transaction: Transaction }) => {
+  const dateLocale = new Date(transaction.dateIso).toLocaleString();
   return (
     <div className={styles.transactionCardContainer}>
-      <div>Date placeholder</div>
+      <div>{dateLocale}</div>
       <Amount
         className={styles.amount}
         amount={transaction.amount}
