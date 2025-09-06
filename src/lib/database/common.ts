@@ -53,42 +53,37 @@ export type Transaction =
   | AccountsTransaction
   | JarsTransaction;
 
-export async function dbUpsert(
-  item: Account,
-  storeName: typeof ACCOUNTS
-): Promise<number>;
-export async function dbUpsert(
-  item: Jar,
-  storeName: typeof JARS
-): Promise<number>;
-export async function dbUpsert(
-  item: Transaction,
-  storeName: typeof TRANSACTIONS
-): Promise<number>;
-export async function dbUpsert(
+export const dbUpsert = async (
   item: Account | Jar | Transaction,
   storeName: typeof ACCOUNTS | typeof JARS | typeof TRANSACTIONS
-) {
+) => {
   const db = await getDatabase();
-  return new Promise((resolve, reject) => {
+  return new Promise<number>((resolve, reject) => {
     const transaction = db.transaction(storeName, "readwrite");
     const store = transaction.objectStore(storeName);
     const request = store.put(item);
     request.onsuccess = () => {
+      if (typeof request.result != "number") {
+        throw new TypeError(
+          `Unexpected type of ${
+            request.result
+          }: ${typeof request.result}, expected: ${"number"}`
+        );
+      }
       resolve(request.result);
     };
     request.onerror = () => {
       reject(request.error);
     };
   });
-}
+};
 
 export const dbDelete = async (
   id: number,
   storeName: typeof ACCOUNTS | typeof JARS | typeof TRANSACTIONS
-): Promise<void> => {
+) => {
   const db = await getDatabase();
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const transaction = db.transaction(storeName, "readwrite");
     const store = transaction.objectStore(storeName);
     const request = store.delete(id);
@@ -101,16 +96,11 @@ export const dbDelete = async (
   });
 };
 
-export async function dbGetAll(storeName: typeof ACCOUNTS): Promise<Account[]>;
-export async function dbGetAll(storeName: typeof JARS): Promise<Jar[]>;
-export async function dbGetAll(
-  storeName: typeof TRANSACTIONS
-): Promise<Transaction[]>;
-export async function dbGetAll(
+export const dbGetAll = async (
   storeName: typeof ACCOUNTS | typeof JARS | typeof TRANSACTIONS
-) {
+) => {
   const db = await getDatabase();
-  return new Promise((resolve, reject) => {
+  return new Promise<unknown[]>((resolve, reject) => {
     const transaction = db.transaction(storeName, "readonly");
     const store = transaction.objectStore(storeName);
     const request = store.getAll();
@@ -121,21 +111,12 @@ export async function dbGetAll(
       reject(request.error);
     };
   });
-}
+};
 
-export async function dbGet(
-  id: number,
-  storeName: typeof ACCOUNTS
-): Promise<Account>;
-export async function dbGet(id: number, storeName: typeof JARS): Promise<Jar>;
-export async function dbGet(
-  id: number,
-  storeName: typeof TRANSACTIONS
-): Promise<Transaction>;
-export async function dbGet(
+export const dbGet = async (
   id: number,
   storeName: typeof ACCOUNTS | typeof JARS | typeof TRANSACTIONS
-) {
+) => {
   const db = await getDatabase();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(storeName, "readonly");
@@ -148,4 +129,4 @@ export async function dbGet(
       reject(request.error);
     };
   });
-}
+};

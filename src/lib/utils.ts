@@ -21,7 +21,9 @@ export const memoize = <T extends (...args: Parameters<T>) => ReturnType<T>>(
 };
 
 export const memoizeWithDataVersion = <
-  T extends (...args: Parameters<T>) => ReturnType<T>
+  T extends (
+    ...args: Parameters<T> extends Array<unknown> ? Parameters<T> : never
+  ) => ReturnType<T>
 >(
   fn: T,
   getDataVersion: () => number

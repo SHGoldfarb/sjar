@@ -2,6 +2,30 @@ import { memoizeWithDataVersion } from "../utils";
 import { Account, dbDelete, dbGet, dbGetAll, dbUpsert } from "./common";
 import { ACCOUNTS } from "./db";
 
+const accountCast = (data: unknown): Account | undefined => {
+  if (!data || typeof data !== "object" || !("type" in data)) {
+    return;
+  }
+
+  const type = data.type;
+
+  if (type !== "account") {
+    return;
+  }
+
+  const name = "name" in data ? data.name : undefined;
+
+  if (typeof name !== "string") {
+    return;
+  }
+
+  return {
+    ...data,
+    type,
+    name,
+  };
+};
+
 let dataVersion = 1;
 
 export const dbUpsertAccount = async (account: Account) => {
@@ -16,14 +40,22 @@ export const dbDeleteAccount = async (id: number) => {
   return response;
 };
 
-const getAccountsNoCache = () => dbGetAll(ACCOUNTS);
+const getAccountsNoCache = async () => {
+  const accounts = await dbGetAll(ACCOUNTS);
+  return accounts
+    .map((account) => accountCast(account))
+    .filter((account) => !!account);
+};
 
 export const dbGetAccounts = memoizeWithDataVersion(
   getAccountsNoCache,
   () => dataVersion
 );
 
-const getAccountNoCache = (id: number) => dbGet(id, ACCOUNTS);
+const getAccountNoCache = async (id: number) => {
+  const account = await dbGet(id, ACCOUNTS);
+  return accountCast(account);
+};
 
 export const dbGetAccount = memoizeWithDataVersion(
   getAccountNoCache,
