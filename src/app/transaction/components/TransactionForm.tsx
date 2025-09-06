@@ -8,6 +8,7 @@ import { parseTransactionFormData } from "./utils";
 import { TransactionSelectors } from "./transactionForm/TransactionSelectors";
 import { TransactionDateInput } from "./transactionForm/TransactionDateInput";
 import { TransactionTimeInput } from "./transactionForm/TransactionTimeInput";
+import { isTransactionValid } from "@/lib/database/transactions";
 
 const TransactionForm = ({
   onSubmit,
@@ -16,7 +17,7 @@ const TransactionForm = ({
 }) => {
   const handleSubmit = async (formData: FormData) => {
     const transaction = parseTransactionFormData(formData);
-    if (transaction) {
+    if (transaction && isTransactionValid(transaction)) {
       await onSubmit(transaction);
     }
   };

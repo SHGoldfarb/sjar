@@ -36,7 +36,6 @@ export const parseTransactionFormData = (
   }
 
   const amount = parseInt(amountRaw, 10);
-
   const date = new Date(dateRaw);
   const [hours, minutes, seconds] = timeRaw.split(":").map((v) => parseInt(v));
   date.setHours(hours, minutes, seconds);

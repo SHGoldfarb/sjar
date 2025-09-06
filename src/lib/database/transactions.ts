@@ -162,6 +162,37 @@ const transactionCast = (data: unknown) => {
   );
 };
 
+export const isTransactionValid = (transaction: Transaction) => {
+  if (isNaN(transaction.amount)) {
+    return false;
+  }
+
+  if (
+    transaction.transactionType === "income" ||
+    transaction.transactionType === "expense"
+  ) {
+    if (isNaN(transaction.accountId) || isNaN(transaction.jarId)) {
+      return false;
+    }
+  }
+
+  if (transaction.transactionType === "jars") {
+    if (isNaN(transaction.originJarId) || isNaN(transaction.destinationJarId)) {
+      return false;
+    }
+  }
+
+  if (transaction.transactionType === "accounts") {
+    if (
+      isNaN(transaction.originAccountId) ||
+      isNaN(transaction.destinationAccountId)
+    ) {
+      return false;
+    }
+  }
+  return true;
+};
+
 let dataVersion = 1;
 
 export const dbUpsertTransaction = async (transaction: Transaction) => {
@@ -180,7 +211,7 @@ const getTransactionsNoCache = async () => {
   const transactions = await dbGetAll(TRANSACTIONS);
   return transactions
     .map((transaction) => transactionCast(transaction))
-    .filter((transaction) => !!transaction);
+    .filter((transaction) => !!transaction && isTransactionValid(transaction));
 };
 
 export const dbGetTransactions = memoizeWithDataVersion(
@@ -189,8 +220,10 @@ export const dbGetTransactions = memoizeWithDataVersion(
 );
 
 const getTransactionNoCache = async (id: number) => {
-  const transaction = await dbGet(id, TRANSACTIONS);
-  return transactionCast(transaction);
+  const transaction = transactionCast(await dbGet(id, TRANSACTIONS));
+  return transaction && isTransactionValid(transaction)
+    ? transaction
+    : undefined;
 };
 
 export const dbGetTransaction = memoizeWithDataVersion(
