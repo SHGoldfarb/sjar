@@ -1,7 +1,7 @@
-import { useAsync } from "@/hooks/useAsync";
 import { dbGetTransactions } from "@/lib/database/transactions";
 import { useTransactionsStaleIndicator } from "@/providers/TransactionsStaleIndicator";
 import { useMemo } from "react";
+import { useQuery } from "./useQuery";
 
 export const useTransactions = (options?: { withDeleted?: boolean }) => {
   const [staleIndicator] = useTransactionsStaleIndicator();
@@ -15,8 +15,8 @@ export const useTransactions = (options?: { withDeleted?: boolean }) => {
     [options?.withDeleted]
   );
 
-  const { data, isLoading } = useAsync(getTransactions, {
-    deps: [staleIndicator],
+  const { data, isLoading } = useQuery(getTransactions, {
+    key: ["useTransactions", options, staleIndicator],
   });
 
   return { data, isLoading };

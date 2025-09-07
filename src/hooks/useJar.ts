@@ -1,15 +1,15 @@
-import { useAsync } from "@/hooks/useAsync";
 import { dbGetJar } from "@/lib/database/jars";
 import { useJarsStaleIndicator } from "@/providers/JarsStaleIndicator";
 import { useMemo } from "react";
+import { useQuery } from "./useQuery";
 
 export const useJar = (id: number) => {
   const [staleIndicator] = useJarsStaleIndicator();
 
-  const { data, isLoading } = useAsync(
+  const { data, isLoading } = useQuery(
     useMemo(() => () => dbGetJar(id), [id]),
     {
-      deps: [staleIndicator],
+      key: ["useJar", id, staleIndicator],
     }
   );
 

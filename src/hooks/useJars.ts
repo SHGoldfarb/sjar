@@ -1,7 +1,7 @@
-import { useAsync } from "@/hooks/useAsync";
 import { dbGetJars } from "@/lib/database/jars";
 import { useJarsStaleIndicator } from "@/providers/JarsStaleIndicator";
 import { useMemo } from "react";
+import { useQuery } from "./useQuery";
 
 export const useJars = (options?: { withDeleted?: boolean }) => {
   const [staleIndicator] = useJarsStaleIndicator();
@@ -13,8 +13,8 @@ export const useJars = (options?: { withDeleted?: boolean }) => {
     [options?.withDeleted]
   );
 
-  const { data, isLoading } = useAsync(getJars, {
-    deps: [staleIndicator],
+  const { data, isLoading } = useQuery(getJars, {
+    key: ["useJars", options, staleIndicator],
   });
 
   return { data, isLoading };
