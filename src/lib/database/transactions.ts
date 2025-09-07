@@ -211,7 +211,8 @@ const getTransactionsNoCache = async () => {
   const transactions = await dbGetAll(TRANSACTIONS);
   return transactions
     .map((transaction) => transactionCast(transaction))
-    .filter((transaction) => !!transaction && isTransactionValid(transaction));
+    .filter((transaction) => transaction && isTransactionValid(transaction))
+    .filter((transaction) => !!transaction);
 };
 
 export const dbGetTransactions = memoizeWithDataVersion(
