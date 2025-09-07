@@ -1,8 +1,8 @@
 import { useGlobalState } from "@/providers/GlobalState";
 import { useEffect } from "react";
 
-export const useQuery = <U, T extends () => Promise<U>>(
-  asyncFunction: T,
+export const useQuery = <T>(
+  asyncFunction: () => Promise<T>,
   options: { key: unknown[] }
 ) => {
   const baseKey = JSON.stringify(options.key);
@@ -11,7 +11,7 @@ export const useQuery = <U, T extends () => Promise<U>>(
     () => ({
       startedLoading: false,
       finishedLoading: false,
-      data: undefined as undefined | U,
+      data: undefined as undefined | T,
     })
   );
 
