@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import styles from "./totals.module.css";
 import Amount from "./components/Amount";
 import { useTransactions } from "@/hooks/useTransactions";
 
@@ -31,9 +30,13 @@ const Totals = () => {
   );
 
   return (
-    <div className={styles.totalsContainer}>
-      <Amount type="income" amount={totalIncome} />
-      <Amount type="expense" amount={totalExpense} />
+    <div className="flex justify-evenly py-4">
+      <Amount type="income" amount={totalIncome} className="w-30 text-center" />
+      <Amount
+        type="expense"
+        amount={totalExpense}
+        className="w-30 text-center"
+      />
     </div>
   );
 };

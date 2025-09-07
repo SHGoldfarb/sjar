@@ -1,5 +1,5 @@
+import clsx from "clsx";
 import { CLP } from "./amount/currency";
-import styles from "./amount.module.css";
 
 const Amount = ({
   amount,
@@ -7,11 +7,15 @@ const Amount = ({
   className,
 }: {
   amount: number;
-  type: "income" | "expense" | string;
+  type?: "income" | "expense";
   className?: string;
 }) => {
+  const colors = {
+    income: "text-blue-400",
+    expense: "text-red-400",
+  };
   return (
-    <div className={[styles[type], className].join(" ")}>{CLP(amount)}</div>
+    <div className={clsx(className, type && colors[type])}>{CLP(amount)}</div>
   );
 };
 

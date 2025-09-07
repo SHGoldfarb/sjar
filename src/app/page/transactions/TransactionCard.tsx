@@ -1,19 +1,24 @@
 import { Transaction } from "@/lib/database/common";
-import Amount from "../components/Amount";
-import styles from "./transactionCard.module.css";
+import React from "react";
+import IncomeTransactionCard from "./transactionCard/IncomeTransactionCard";
+import ExpenseTransactionCard from "./transactionCard/ExpenseTransactionCard";
+import AccountsTransactionCard from "./transactionCard/AccountsTransactionCard";
+import JarsTransactionCard from "./transactionCard/JarsTransactionCard";
 
 const TransactionCard = ({ transaction }: { transaction: Transaction }) => {
-  const dateLocale = new Date(transaction.dateIso).toLocaleString();
-  return (
-    <div className={styles.transactionCardContainer}>
-      <div>{dateLocale}</div>
-      <Amount
-        className={styles.amount}
-        amount={transaction.amount}
-        type={transaction.transactionType}
-      />
-    </div>
-  );
+  const { transactionType } = transaction;
+  if (transactionType === "income") {
+    return <IncomeTransactionCard transaction={transaction} />;
+  }
+  if (transactionType === "expense") {
+    return <ExpenseTransactionCard transaction={transaction} />;
+  }
+  if (transactionType === "accounts") {
+    return <AccountsTransactionCard transaction={transaction} />;
+  }
+  if (transactionType === "jars") {
+    return <JarsTransactionCard transaction={transaction} />;
+  }
 };
 
 export default TransactionCard;
