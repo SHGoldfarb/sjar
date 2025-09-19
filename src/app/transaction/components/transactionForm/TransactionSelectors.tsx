@@ -4,30 +4,63 @@ import { useState } from "react";
 import { TransactionAccountSelector } from "./transactionSelectors/TransactionAccountSelector";
 import { TransactionJarSelector } from "./transactionSelectors/TransactionJarSelector";
 import { TransactionTypeSelector } from "./transactionSelectors/TransactionTypeSelector";
+import { Transaction } from "@/lib/database/common";
 
-export const TransactionSelectors = () => {
-  const defaultType = "expense";
-  const [selectedType, setSelectedType] = useState(defaultType);
+export const TransactionSelectors = ({
+  transaction,
+}: {
+  transaction?: Transaction;
+}) => {
+  const initialType = transaction?.transactionType || "expense";
+  const [selectedType, setSelectedType] = useState(initialType);
+  const initialValues = {
+    accountId: undefined,
+    jarId: undefined,
+    originAccountId: undefined,
+    destinationAccountId: undefined,
+    originJarId: undefined,
+    destinationJarId: undefined,
+    ...transaction,
+  };
+
   return (
     <>
       <TransactionTypeSelector
         onChange={setSelectedType}
-        defaultValue={defaultType}
+        defaultValue={initialType}
       />
       {selectedType === "expense" || selectedType === "income" ? (
         <>
-          <TransactionAccountSelector name="accountId" />
-          <TransactionJarSelector name="jarId" />
+          <TransactionAccountSelector
+            name="accountId"
+            initialValue={initialValues.accountId}
+          />
+          <TransactionJarSelector
+            name="jarId"
+            initialValue={initialValues.jarId}
+          />
         </>
       ) : selectedType === "accounts" ? (
         <>
-          <TransactionAccountSelector name="originAccountId" />
-          <TransactionAccountSelector name="destinationAccountId" />
+          <TransactionAccountSelector
+            name="originAccountId"
+            initialValue={initialValues.originAccountId}
+          />
+          <TransactionAccountSelector
+            name="destinationAccountId"
+            initialValue={initialValues.destinationAccountId}
+          />
         </>
       ) : selectedType === "jars" ? (
         <>
-          <TransactionJarSelector name="originJarId" />
-          <TransactionJarSelector name="destinationJarId" />
+          <TransactionJarSelector
+            name="originJarId"
+            initialValue={initialValues.originJarId}
+          />
+          <TransactionJarSelector
+            name="destinationJarId"
+            initialValue={initialValues.destinationJarId}
+          />
         </>
       ) : null}
     </>

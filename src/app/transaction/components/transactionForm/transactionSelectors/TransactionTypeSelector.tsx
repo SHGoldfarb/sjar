@@ -7,13 +7,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Transaction } from "@/lib/database/common";
 
 export const TransactionTypeSelector = ({
   onChange,
   defaultValue,
 }: {
-  onChange: (value: string) => void;
-  defaultValue?: string;
+  onChange: (value: Transaction["transactionType"]) => void;
+  defaultValue?: Transaction["transactionType"];
 }) => {
   return (
     <Select

@@ -1,5 +1,6 @@
 import { useTransactions } from "@/hooks/useTransactions";
 import TransactionCard from "./transactions/TransactionCard";
+import Link from "next/link";
 
 const Transactions = () => {
   const { data: transactions = [] } = useTransactions();
@@ -7,7 +8,9 @@ const Transactions = () => {
   return (
     <div>
       {transactions.map((t) => (
-        <TransactionCard transaction={t} key={t.id} />
+        <Link href={`/transaction?transactionId=${t.id}`} key={t.id}>
+          <TransactionCard transaction={t} />
+        </Link>
       ))}
     </div>
   );

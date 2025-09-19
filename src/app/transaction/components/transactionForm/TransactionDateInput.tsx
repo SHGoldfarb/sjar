@@ -10,8 +10,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export const TransactionDateInput = () => {
-  const [date, setDate] = React.useState<Date>(new Date());
+export const TransactionDateInput = ({
+  initialValue = new Date(),
+}: {
+  initialValue?: Date;
+}) => {
+  const [date, setDate] = React.useState<Date>(initialValue);
 
   return (
     <Popover>

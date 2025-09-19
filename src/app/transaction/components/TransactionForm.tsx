@@ -12,33 +12,43 @@ import { isTransactionValid } from "@/lib/database/transactions";
 
 const TransactionForm = ({
   onSubmit,
+  onDelete,
+  transaction,
 }: {
-  onSubmit: (transaction: Transaction) => unknown;
+  onSubmit: (newTransactionValues: Transaction) => Promise<void>;
+  onDelete?: () => Promise<void>;
+  transaction?: Transaction;
 }) => {
   const handleSubmit = async (formData: FormData) => {
-    const transaction = parseTransactionFormData(formData);
-    if (transaction && isTransactionValid(transaction)) {
-      await onSubmit(transaction);
+    const newTransactionValues = parseTransactionFormData(formData);
+    if (newTransactionValues && isTransactionValid(newTransactionValues)) {
+      await onSubmit(newTransactionValues);
     }
   };
+  const transactionDate = transaction && new Date(transaction.dateIso);
   return (
     <Form action={handleSubmit} className="flex flex-col gap-4 p-4">
       <div className="flex gap-2">
         <div className="flex-1">
-          <TransactionDateInput />
+          <TransactionDateInput initialValue={transactionDate} />
         </div>
         <div className="flex-1">
-          <TransactionTimeInput />
+          <TransactionTimeInput initialValue={transactionDate} />
         </div>
       </div>
-      <TransactionSelectors />
+      <TransactionSelectors transaction={transaction} />
       <Input
-        defaultValue={""}
+        defaultValue={transaction ? transaction.amount : ""}
         placeholder="Amount"
         name="amount"
         type="number"
       />
       <Button type="submit">Save</Button>
+      {onDelete ? (
+        <Button onClick={onDelete} type="button">
+          Delete
+        </Button>
+      ) : null}
     </Form>
   );
 };
